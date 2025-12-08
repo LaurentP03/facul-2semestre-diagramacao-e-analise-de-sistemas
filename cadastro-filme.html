@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Filme - Locadora</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 Vídeo Locadora Passatempo</h1>
+            <p>Sistema de Gerenciamento</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="cadastro-filme.html" class="active">Cadastrar Filme</a>
+            <a href="cadastro-cliente.html">Cadastrar Cliente</a>
+            <a href="locacao.html">Fazer Locação</a>
+            <a href="devolucao.html">Devolver Item</a>
+            <a href="reserva.html">Fazer Reserva</a>
+            <a href="consulta.html">Consultar Acervo</a>
+        </nav>
+
+        <main>
+            <h2>Cadastro de Filme</h2>
+            
+            <form id="formFilme">
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Título Original *</label>
+                        <input type="text" id="tituloOriginal" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Título em Português *</label>
+                        <input type="text" id="tituloPortugues" required>
+                    </div>
+                </div>
+
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Ano *</label>
+                        <input type="number" id="ano" min="1900" max="2024" required>
+                    </div>
+                    <div class="form-group">
+                        <label>País *</label>
+                        <input type="text" id="pais" required>
+                    </div>
+                </div>
+
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Direção *</label>
+                        <input type="text" id="direcao" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Gênero *</label>
+                        <select id="genero" required>
+                            <option value="">Selecione...</option>
+                            <option value="acao">Ação</option>
+                            <option value="animacao">Animação</option>
+                            <option value="aventura">Aventura</option>
+                            <option value="comedia">Comédia</option>
+                            <option value="documentario">Documentário</option>
+                            <option value="drama">Drama</option>
+                            <option value="ficcao">Ficção</option>
+                            <option value="guerra">Guerra</option>
+                            <option value="musical">Musical</option>
+                            <option value="policial">Policial</option>
+                            <option value="romance">Romance</option>
+                            <option value="suspense">Suspense</option>
+                            <option value="terror">Terror</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Elenco *</label>
+                    <input type="text" id="elenco" placeholder="Separe os nomes por vírgula" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Sinopse *</label>
+                    <textarea id="sinopse" required></textarea>
+                </div>
+
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Duração (minutos) *</label>
+                        <input type="number" id="duracao" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; margin-top: 30px;">
+                            <input type="checkbox" id="ehLancamento" style="width: auto; margin-right: 10px;">
+                            É Lançamento?
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit">Cadastrar Filme</button>
+            </form>
+
+            <div id="mensagem"></div>
+
+            <div class="lista-itens">
+                <h3>Filmes Cadastrados</h3>
+                <div id="listaFilmes"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Vídeo Locadora Passatempo</p>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { Filme } from './Filme.js';
+        import { Item } from './Item.js';
+        import { Distribuidora } from './Distribuidora.js';
+
+        // Recuperar dados do localStorage
+        let filmes = JSON.parse(localStorage.getItem('filmes') || '[]');
+        let contadorId = parseInt(localStorage.getItem('contadorId') || '1');
+
+        // Exibir filmes cadastrados
+        function exibirFilmes() {
+            const container = document.getElementById('listaFilmes');
+            if (filmes.length === 0) {
+                container.innerHTML = '<p style="color: #666;">Nenhum filme cadastrado ainda.</p>';
+                return;
+            }
+
+            container.innerHTML = filmes.map(f => `
+                <div class="item">
+                    <h4>${f.tituloPortugues} (${f.ano})</h4>
+                    <p><strong>Original:</strong> ${f.tituloOriginal}</p>
+                    <p><strong>Direção:</strong> ${f.direcao} | <strong>Gênero:</strong> ${f.genero}</p>
+                    <p><strong>Duração:</strong> ${f.duracao} min | <strong>País:</strong> ${f.pais}</p>
+                    ${f.ehLancamento ? '<span class="badge badge-warning">Lançamento</span>' : '<span class="badge badge-success">Catálogo</span>'}
+                </div>
+            `).join('');
+        }
+
+        // Cadastrar filme
+        document.getElementById('formFilme').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const distribuidora = new Distribuidora(1, "Distribuidora Padrão", "00.000.000/0001-00", "Rua A, 123", "(11) 1111-1111", "João Silva");
+
+            const filme = new Filme(
+                contadorId++,
+                document.getElementById('tituloOriginal').value,
+                document.getElementById('tituloPortugues').value,
+                document.getElementById('ano').value,
+                document.getElementById('pais').value,
+                document.getElementById('direcao').value,
+                document.getElementById('elenco').value,
+                document.getElementById('sinopse').value,
+                document.getElementById('duracao').value,
+                document.getElementById('genero').value,
+                document.getElementById('ehLancamento').checked,
+                distribuidora
+            );
+
+            // Adicionar itens automaticamente (2 DVDs e 2 Blu-Rays)
+            const item1 = new Item(contadorId++, `DVD-${contadorId}`, 'DVD', new Date().toISOString());
+            const item2 = new Item(contadorId++, `DVD-${contadorId}`, 'DVD', new Date().toISOString());
+            const item3 = new Item(contadorId++, `BR-${contadorId}`, 'Blu-Ray', new Date().toISOString());
+            const item4 = new Item(contadorId++, `BR-${contadorId}`, 'Blu-Ray', new Date().toISOString());
+            
+            filme.itens = [item1, item2, item3, item4];
+
+            filmes.push(filme);
+            localStorage.setItem('filmes', JSON.stringify(filmes));
+            localStorage.setItem('contadorId', contadorId.toString());
+
+            document.getElementById('mensagem').innerHTML = '<div class="alert alert-success">✅ Filme cadastrado com sucesso!</div>';
+            e.target.reset();
+            exibirFilmes();
+
+            setTimeout(() => {
+                document.getElementById('mensagem').innerHTML = '';
+            }, 3000);
+        });
+
+        exibirFilmes();
+    </script>
+</body>
+</html>

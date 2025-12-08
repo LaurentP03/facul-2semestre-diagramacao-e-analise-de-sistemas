@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fazer Reserva - Locadora</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 Vídeo Locadora Passatempo</h1>
+            <p>Sistema de Gerenciamento</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="cadastro-filme.html">Cadastrar Filme</a>
+            <a href="cadastro-cliente.html">Cadastrar Cliente</a>
+            <a href="locacao.html">Fazer Locação</a>
+            <a href="devolucao.html">Devolver Item</a>
+            <a href="reserva.html" class="active">Fazer Reserva</a>
+            <a href="consulta.html">Consultar Acervo</a>
+        </nav>
+
+        <main>
+            <h2>Nova Reserva</h2>
+            
+            <form id="formReserva">
+                <div class="form-group">
+                    <label>Cliente *</label>
+                    <select id="clienteSelect" required>
+                        <option value="">Selecione um cliente...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Filme *</label>
+                    <select id="filmeSelect" onchange="verificarDisponibilidade()" required>
+                        <option value="">Selecione um filme...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo de Mídia *</label>
+                    <select id="tipoMidia" onchange="verificarDisponibilidade()" required>
+                        <option value="">Selecione...</option>
+                        <option value="DVD">DVD</option>
+                        <option value="Blu-Ray">Blu-Ray</option>
+                        <option value="VHS">VHS</option>
+                        <option value="HD-DVD">HD-DVD</option>
+                    </select>
+                </div>
+
+                <div id="infoReserva"></div>
+
+                <button type="submit">Fazer Reserva</button>
+            </form>
+
+            <div id="mensagem"></div>
+
+            <div class="lista-itens">
+                <h3>Reservas Abertas</h3>
+                <div id="listaReservas"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Vídeo Locadora Passatempo</p>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { Reserva } from './Reserva.js';
+
+        let filmes = JSON.parse(localStorage.getItem('filmes') || '[]');
+        let clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+        let reservas = JSON.parse(localStorage.getItem('reservas') || '[]');
+        let contadorId = parseInt(localStorage.getItem('contadorId') || '1');
+
+        function carregarSelects() {
+            const clienteSelect = document.getElementById('clienteSelect');
+            clienteSelect.innerHTML = '<option value="">Selecione um cliente...</option>' +
+                clientes.map(c => `<option value="${c.idCliente}">${c.nome}</option>`).join('');
+
+            const filmeSelect = document.getElementById('filmeSelect');
+            filmeSelect.innerHTML = '<option value="">Selecione um filme...</option>' +
+                filmes.map(f => `<option value="${f.idFilme}">${f.tituloPortugues}</option>`).join('');
+        }
+
+        window.verificarDisponibilidade = function() {
+            const filmeId = parseInt(document.getElementById('filmeSelect').value);
+            const tipoMidia = document.getElementById('tipoMidia').value;
+            const infoDiv = document.getElementById('infoReserva');
+
+            if (!filmeId || !tipoMidia) {
+                infoDiv.innerHTML = '';
+                return;
+            }
+
+            const filme = filmes.find(f => f.idFilme === filmeId);
+            const itensDisponiveis = filme.itens.filter(i => 
+                i.tipoMidia === tipoMidia && i.status === 'disponivel'
+            );
+
+            if (itensDisponiveis.length > 0) {
+                infoDiv.innerHTML = `
+                    <div class="alert alert-error">
+                        ❌ Não é possível fazer reserva. Há ${itensDisponiveis.length} item(ns) disponível(is) deste tipo de mídia.
+                        <br>Por favor, faça a locação diretamente.
+                    </div>
+                `;
+                document.querySelector('button[type="submit"]').disabled = true;
+            } else {
+                infoDiv.innerHTML = `
+                    <div class="alert alert-success">
+                        ✅ Pode reservar! Não há itens disponíveis no momento.
+                        <br>Você será notificado por email quando o item estiver disponível.
+                    </div>
+                `;
+                document.querySelector('button[type="submit"]').disabled = false;
+            }
+        };
+
+        function exibirReservas() {
+            const container = document.getElementById('listaReservas');
+            const abertas = reservas.filter(r => r.status === 'aberta');
+
+            if (abertas.length === 0) {
+                container.innerHTML = '<p style="color: #666;">Nenhuma reserva aberta no momento.</p>';
+                return;
+            }
+
+            container.innerHTML = abertas.map(r => {
+                const cliente = clientes.find(c => c.idCliente === r.cliente.idCliente);
+                const filme = filmes.find(f => f.idFilme === r.filme.idFilme);
+                const dataReserva = new Date(r.dataHoraReserva);
+
+                return `
+                    <div class="item">
+                        <h4>${filme.tituloPortugues}</h4>
+                        <p><strong>Cliente:</strong> ${cliente.nome}</p>
+                        <p><strong>Email:</strong> ${cliente.email}</p>
+                        <p><strong>Tipo de mídia:</strong> ${r.tipoMidia}</p>
+                        <p><strong>Data da reserva:</strong> ${dataReserva.toLocaleString()}</p>
+                        <span class="badge badge-warning">Aguardando disponibilidade</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        document.getElementById('formReserva').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const clienteId = parseInt(document.getElementById('clienteSelect').value);
+            const filmeId = parseInt(document.getElementById('filmeSelect').value);
+            const tipoMidia = document.getElementById('tipoMidia').value;
+
+            const cliente = clientes.find(c => c.idCliente === clienteId);
+            const filme = filmes.find(f => f.idFilme === filmeId);
+
+            // Verificar novamente se não há itens disponíveis
+            const itensDisponiveis = filme.itens.filter(i => 
+                i.tipoMidia === tipoMidia && i.status === 'disponivel'
+            );
+
+            if (itensDisponiveis.length > 0) {
+                document.getElementById('mensagem').innerHTML = 
+                    '<div class="alert alert-error">❌ Não é possível fazer reserva. Há itens disponíveis!</div>';
+                return;
+            }
+
+            const reserva = new Reserva(contadorId++, cliente, filme, tipoMidia);
+            reservas.push(reserva);
+
+            localStorage.setItem('reservas', JSON.stringify(reservas));
+            localStorage.setItem('contadorId', contadorId.toString());
+
+            document.getElementById('mensagem').innerHTML = `
+                <div class="alert alert-success">
+                    ✅ Reserva realizada com sucesso!<br>
+                    Você receberá um email em <strong>${cliente.email}</strong> quando o item estiver disponível.
+                </div>
+            `;
+            
+            e.target.reset();
+            document.getElementById('infoReserva').innerHTML = '';
+            exibirReservas();
+
+            setTimeout(() => {
+                document.getElementById('mensagem').innerHTML = '';
+            }, 5000);
+        });
+
+        carregarSelects();
+        exibirReservas();
+    </script>
+</body>
+</html>

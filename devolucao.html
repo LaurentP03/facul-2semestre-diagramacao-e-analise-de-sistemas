@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devolver Item - Locadora</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 Vídeo Locadora Passatempo</h1>
+            <p>Sistema de Gerenciamento</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="cadastro-filme.html">Cadastrar Filme</a>
+            <a href="cadastro-cliente.html">Cadastrar Cliente</a>
+            <a href="locacao.html">Fazer Locação</a>
+            <a href="devolucao.html" class="active">Devolver Item</a>
+            <a href="reserva.html">Fazer Reserva</a>
+            <a href="consulta.html">Consultar Acervo</a>
+        </nav>
+
+        <main>
+            <h2>Devolução de Itens</h2>
+
+            <div id="mensagem"></div>
+
+            <div class="lista-itens">
+                <h3>Locações Pendentes de Devolução</h3>
+                <div id="listaDevolucoes"></div>
+            </div>
+
+            <div class="lista-itens">
+                <h3>Histórico de Devoluções</h3>
+                <div id="historicoDevolvidos"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Vídeo Locadora Passatempo</p>
+        </footer>
+    </div>
+
+    <script type="module">
+        let filmes = JSON.parse(localStorage.getItem('filmes') || '[]');
+        let clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+        let locacoes = JSON.parse(localStorage.getItem('locacoes') || '[]');
+
+        function calcularMulta(dataPrevisao, dataDevolucao, valorLocacao) {
+            const previsao = new Date(dataPrevisao);
+            const devolucao = new Date(dataDevolucao);
+            
+            const diffTime = devolucao - previsao;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays > 0) {
+                return diffDays * valorLocacao;
+            }
+            return 0;
+        }
+
+        function exibirLocacoesPendentes() {
+            const container = document.getElementById('listaDevolucoes');
+            const pendentes = locacoes.filter(l => !l.dataDevolucao);
+
+            if (pendentes.length === 0) {
+                container.innerHTML = '<p style="color: #666;">Não há locações pendentes de devolução.</p>';
+                return;
+            }
+
+            container.innerHTML = pendentes.map(l => {
+                const cliente = clientes.find(c => c.idCliente === l.cliente.idCliente);
+                const filme = filmes.find(f => f.idFilme === l.filme.idFilme);
+                const dataPrevisao = new Date(l.dataPrevistaDevolucao);
+                const hoje = new Date();
+                const atrasado = hoje > dataPrevisao;
+                const diasAtraso = atrasado ? Math.ceil((hoje - dataPrevisao) / (1000 * 60 * 60 * 24)) : 0;
+                const multaPrevista = diasAtraso * l.valorCobrada;
+
+                return `
+                    <div class="item">
+                        <h4>${filme.tituloPortugues}</h4>
+                        <p><strong>Cliente:</strong> ${cliente.nome}</p>
+                        <p><strong>Email:</strong> ${cliente.email}</p>
+                        <p><strong>Tipo:</strong> ${l.item.tipoMidia}</p>
+                        <p><strong>Valor locação:</strong> R$ ${l.valorCobrada.toFixed(2)}</p>
+                        <p><strong>Data locação:</strong> ${new Date(l.dataLocacao).toLocaleDateString()}</p>
+                        <p><strong>Devolução prevista:</strong> ${dataPrevisao.toLocaleDateString()}</p>
+                        ${atrasado ? `
+                            <p style="color: red;"><strong>ATRASADO!</strong> ${diasAtraso} dia(s)</p>
+                            <p style="color: red;"><strong>Multa:</strong> R$ ${multaPrevista.toFixed(2)}</p>
+                            <span class="badge badge-danger">Em atraso</span>
+                        ` : '<span class="badge badge-success">No prazo</span>'}
+                        <br><br>
+                        <button onclick="realizarDevolucao(${l.idLocacao})">Devolver Item</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function exibirHistorico() {
+            const container = document.getElementById('historicoDevolvidos');
+            const devolvidos = locacoes.filter(l => l.dataDevolucao).slice(-10).reverse();
+
+            if (devolvidos.length === 0) {
+                container.innerHTML = '<p style="color: #666;">Nenhuma devolução registrada ainda.</p>';
+                return;
+            }
+
+            container.innerHTML = devolvidos.map(l => {
+                const cliente = clientes.find(c => c.idCliente === l.cliente.idCliente);
+                const filme = filmes.find(f => f.idFilme === l.filme.idFilme);
+                const valorTotal = l.valorCobrada + l.multa;
+
+                return `
+                    <div class="item">
+                        <h4>${filme.tituloPortugues}</h4>
+                        <p><strong>Cliente:</strong> ${cliente.nome}</p>
+                        <p><strong>Devolução:</strong> ${new Date(l.dataDevolucao).toLocaleDateString()}</p>
+                        <p><strong>Valor:</strong> R$ ${l.valorCobrada.toFixed(2)}</p>
+                        ${l.multa > 0 ? `<p style="color: red;"><strong>Multa:</strong> R$ ${l.multa.toFixed(2)}</p>` : ''}
+                        <p><strong>Total:</strong> R$ ${valorTotal.toFixed(2)}</p>
+                        <span class="badge badge-success">Devolvido</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.realizarDevolucao = function(locacaoId) {
+            const locacao = locacoes.find(l => l.idLocacao === locacaoId);
+            
+            if (!locacao) {
+                alert('Locação não encontrada!');
+                return;
+            }
+
+            const dataDevolucao = new Date();
+            const multa = calcularMulta(locacao.dataPrevistaDevolucao, dataDevolucao, locacao.valorCobrada);
+            
+            locacao.dataDevolucao = dataDevolucao.toISOString();
+            locacao.multa = multa;
+
+            // Liberar o item
+            const filme = filmes.find(f => f.idFilme === locacao.filme.idFilme);
+            const item = filme.itens.find(i => i.idItem === locacao.item.idItem);
+            item.status = 'disponivel';
+
+            // Atualizar no localStorage
+            const filmeIndex = filmes.findIndex(f => f.idFilme === filme.idFilme);
+            filmes[filmeIndex] = filme;
+
+            const locacaoIndex = locacoes.findIndex(l => l.idLocacao === locacaoId);
+            locacoes[locacaoIndex] = locacao;
+
+            localStorage.setItem('filmes', JSON.stringify(filmes));
+            localStorage.setItem('locacoes', JSON.stringify(locacoes));
+
+            const valorTotal = locacao.valorCobrada + multa;
+            let mensagem = `✅ Devolução realizada com sucesso!<br>Valor total: R$ ${valorTotal.toFixed(2)}`;
+            
+            if (multa > 0) {
+                mensagem += `<br><span style="color: red;">Multa por atraso: R$ ${multa.toFixed(2)}</span>`;
+            }
+
+            document.getElementById('mensagem').innerHTML = `<div class="alert alert-success">${mensagem}</div>`;
+            
+            exibirLocacoesPendentes();
+            exibirHistorico();
+
+            setTimeout(() => {
+                document.getElementById('mensagem').innerHTML = '';
+            }, 5000);
+        };
+
+        exibirLocacoesPendentes();
+        exibirHistorico();
+    </script>
+</body>
+</html>

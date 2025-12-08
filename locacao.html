@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fazer Locação - Locadora</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 Vídeo Locadora Passatempo</h1>
+            <p>Sistema de Gerenciamento</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="cadastro-filme.html">Cadastrar Filme</a>
+            <a href="cadastro-cliente.html">Cadastrar Cliente</a>
+            <a href="locacao.html" class="active">Fazer Locação</a>
+            <a href="devolucao.html">Devolver Item</a>
+            <a href="reserva.html">Fazer Reserva</a>
+            <a href="consulta.html">Consultar Acervo</a>
+        </nav>
+
+        <main>
+            <h2>Nova Locação</h2>
+            
+            <form id="formLocacao">
+                <div class="form-group">
+                    <label>Cliente *</label>
+                    <select id="clienteSelect" required>
+                        <option value="">Selecione um cliente...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Filme *</label>
+                    <select id="filmeSelect" onchange="carregarItens()" required>
+                        <option value="">Selecione um filme...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Item Disponível *</label>
+                    <select id="itemSelect" required>
+                        <option value="">Selecione um filme primeiro</option>
+                    </select>
+                </div>
+
+                <div id="infoLocacao"></div>
+
+                <button type="submit">Realizar Locação</button>
+            </form>
+
+            <div id="mensagem"></div>
+
+            <div class="lista-itens">
+                <h3>Locações Ativas</h3>
+                <div id="locacoesAtivas"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Vídeo Locadora Passatempo</p>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { Locacao } from './Locacao.js';
+
+        let filmes = JSON.parse(localStorage.getItem('filmes') || '[]');
+        let clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+        let locacoes = JSON.parse(localStorage.getItem('locacoes') || '[]');
+        let contadorId = parseInt(localStorage.getItem('contadorId') || '1');
+
+        function carregarSelects() {
+            const clienteSelect = document.getElementById('clienteSelect');
+            clienteSelect.innerHTML = '<option value="">Selecione um cliente...</option>' +
+                clientes.map(c => `<option value="${c.idCliente}">${c.nome}</option>`).join('');
+
+            const filmeSelect = document.getElementById('filmeSelect');
+            filmeSelect.innerHTML = '<option value="">Selecione um filme...</option>' +
+                filmes.map(f => `<option value="${f.idFilme}">${f.tituloPortugues}</option>`).join('');
+        }
+
+        window.carregarItens = function() {
+            const filmeId = parseInt(document.getElementById('filmeSelect').value);
+            const itemSelect = document.getElementById('itemSelect');
+            const infoDiv = document.getElementById('infoLocacao');
+
+            if (!filmeId) {
+                itemSelect.innerHTML = '<option value="">Selecione um filme primeiro</option>';
+                infoDiv.innerHTML = '';
+                return;
+            }
+
+            const filme = filmes.find(f => f.idFilme === filmeId);
+            const itensDisponiveis = filme.itens.filter(i => i.status === 'disponivel');
+
+            if (itensDisponiveis.length === 0) {
+                itemSelect.innerHTML = '<option value="">Nenhum item disponível</option>';
+                infoDiv.innerHTML = '<div class="alert alert-error">❌ Não há itens disponíveis deste filme.</div>';
+                return;
+            }
+
+            itemSelect.innerHTML = '<option value="">Selecione...</option>' +
+                itensDisponiveis.map(i => {
+                    const valor = filme.ehLancamento ? 
+                        (i.tipoMidia === 'Blu-Ray' ? 11.25 : 7.50) :
+                        (i.tipoMidia === 'Blu-Ray' ? 7.50 : 5.00);
+                    return `<option value="${i.idItem}">${i.tipoMidia} - R$ ${valor.toFixed(2)}</option>`;
+                }).join('');
+
+            const prazo = filme.ehLancamento ? 1 : 3;
+            infoDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <p><strong>Prazo de devolução:</strong> ${prazo} dia(s)</p>
+                    <p><strong>Tipo:</strong> ${filme.ehLancamento ? 'Lançamento (+50%)' : 'Catálogo'}</p>
+                </div>
+            `;
+        };
+
+        function exibirLocacoes() {
+            const container = document.getElementById('locacoesAtivas');
+            const ativas = locacoes.filter(l => !l.dataDevolucao);
+
+            if (ativas.length === 0) {
+                container.innerHTML = '<p style="color: #666;">Nenhuma locação ativa no momento.</p>';
+                return;
+            }
+
+            container.innerHTML = ativas.map(l => {
+                const cliente = clientes.find(c => c.idCliente === l.cliente.idCliente);
+                const filme = filmes.find(f => f.idFilme === l.filme.idFilme);
+                const dataPrevisao = new Date(l.dataPrevistaDevolucao);
+                
+                return `
+                    <div class="item">
+                        <h4>${filme.tituloPortugues}</h4>
+                        <p><strong>Cliente:</strong> ${cliente.nome}</p>
+                        <p><strong>Tipo:</strong> ${l.item.tipoMidia}</p>
+                        <p><strong>Valor:</strong> R$ ${l.valorCobrada.toFixed(2)}</p>
+                        <p><strong>Locação:</strong> ${new Date(l.dataLocacao).toLocaleDateString()}</p>
+                        <p><strong>Devolução prevista:</strong> ${dataPrevisao.toLocaleDateString()}</p>
+                        <span class="badge badge-warning">Em andamento</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        document.getElementById('formLocacao').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const clienteId = parseInt(document.getElementById('clienteSelect').value);
+            const filmeId = parseInt(document.getElementById('filmeSelect').value);
+            const itemId = parseInt(document.getElementById('itemSelect').value);
+
+            const cliente = clientes.find(c => c.idCliente === clienteId);
+            const filme = filmes.find(f => f.idFilme === filmeId);
+            const item = filme.itens.find(i => i.idItem === itemId);
+
+            if (!item || item.status !== 'disponivel') {
+                document.getElementById('mensagem').innerHTML = '<div class="alert alert-error">❌ Item não está disponível!</div>';
+                return;
+            }
+
+            // Calcular valor
+            const valor = filme.ehLancamento ? 
+                (item.tipoMidia === 'Blu-Ray' ? 11.25 : 7.50) :
+                (item.tipoMidia === 'Blu-Ray' ? 7.50 : 5.00);
+
+            // Calcular data de devolução
+            const prazo = filme.ehLancamento ? 1 : 3;
+            const dataDevolucao = new Date();
+            dataDevolucao.setDate(dataDevolucao.getDate() + prazo);
+
+            const locacao = new Locacao(
+                contadorId++,
+                item,
+                cliente,
+                valor,
+                dataDevolucao.toISOString()
+            );
+
+            // Atualizar status do item
+            item.status = 'alugado';
+            
+            // Atualizar filme no array
+            const filmeIndex = filmes.findIndex(f => f.idFilme === filmeId);
+            filmes[filmeIndex] = filme;
+
+            locacoes.push(locacao);
+            
+            localStorage.setItem('filmes', JSON.stringify(filmes));
+            localStorage.setItem('locacoes', JSON.stringify(locacoes));
+            localStorage.setItem('contadorId', contadorId.toString());
+
+            document.getElementById('mensagem').innerHTML = '<div class="alert alert-success">✅ Locação realizada com sucesso!</div>';
+            e.target.reset();
+            document.getElementById('infoLocacao').innerHTML = '';
+            exibirLocacoes();
+
+            setTimeout(() => {
+                document.getElementById('mensagem').innerHTML = '';
+            }, 3000);
+        });
+
+        carregarSelects();
+        exibirLocacoes();
+    </script>
+</body>
+</html>

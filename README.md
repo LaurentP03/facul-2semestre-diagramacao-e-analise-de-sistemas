@@ -1,32 +1,131 @@
-Trabalho de Diagramação e Análise de Sistemas
+# 🎬 Vídeo Locadora Passatempo - Sistema de Gerenciamento
 
-Projeto: Vídeo Locadora Passatempo
+Trabalho de Diagramação e Análise de Sistemas - Projeto desenvolvido para gerenciar as operações de uma vídeo locadora.
 
-1. Introdução
-Este documento apresenta os requisitos de usuário para a informatização da Vídeo Locadora.
+## 📁 Estrutura do Projeto
 
-Assuma que essa atividade foi conduzida por meio da realização de entrevistas com cliente e usuários.
+```
+projeto-locadora/
+├── index.html                  # Página inicial
+├── cadastro-filme.html         # Cadastro de filmes
+├── cadastro-cliente.html       # Cadastro de clientes
+├── locacao.html               # Realizar locações
+├── devolucao.html             # Devolver itens
+├── reserva.html               # Fazer reservas
+├── consulta.html              # Consultar acervo
+├── style.css                  # Estilos (único para todas páginas)
+│
+├── Cliente.js                 # Classe Cliente
+├── Titular.js                 # Classe Titular (herda de Cliente)
+├── Dependente.js              # Classe Dependente (herda de Cliente)
+├── Filme.js                   # Classe Filme
+├── Item.js                    # Classe Item
+├── Distribuidora.js           # Classe Distribuidora
+├── Locacao.js                 # Classe Locação
+├── Reserva.js                 # Classe Reserva
+└── SistemaLocacao.js          # Classe Sistema (opcional)
+```
 
-O trabalho deverá ser realizado em grupo, de até 4 pessoas.
+## 🚀 Como Executar
 
-2. Descrição do Propósito do Sistema
-A vídeo-locadora necessita de um sistema de informação para apoiar a realização de suas atividades principais, a saber: empréstimo e devolução de itens e reserva de filmes. Para que essas atividades sejam apoiadas, é necessário controlar as informações acerca de filmes e clientes, dentre outros.
+1. Instale a extensão **Live Server** no VS Code
+2. Clique com botão direito no arquivo `index.html`
+3. Selecione **"Open with Live Server"**
+4. O sistema abrirá automaticamente no navegador
 
-Além disso, devem ser fornecidas facilidades de consulta ao acervo da locadora, permitindo consultas por diversas informações dos filmes.
+## 💾 Armazenamento de Dados
 
-3. Descrição do Minimundo
+O sistema usa **localStorage** do navegador para salvar todos os dados:
+- Filmes cadastrados
+- Clientes (titulares e dependentes)  
+- Locações ativas e históricas
+- Reservas abertas
 
-A Vídeo Locadora Passatempo deseja um sistema de informação para gerenciar o atendimento aos seus clientes. O negócio principal da locadora é a locação de vídeos (ou filmes). De um dado filme, a locadora pode possuir vários itens, em diferentes mídias, tais como DVD, VHS, Blu-Ray, HD-DVD.
+**Os dados ficam salvos no navegador**, então não se perdem ao fechar a página!
 
-Os filmes são classificados nos seguintes gêneros: ação, animação, aventura, comédia, documentário, drama, ficção, guerra, musical, policial, romance, suspense e terror.
+## 📋 Funcionalidades Implementadas
 
-Além disso, a locadora faz distinção entre filmes de catálogo e lançamentos. Os valores padrão das locações são dados pelo tipo de mídia do item sendo locado. Atualmente, são cobrados os seguintes valores: DVD, VHS e HD-DVD – R$ 5,00; Blu-Ray – R$ 7,50, sendo que lançamentos têm um acréscimo de 50% nos valores acima mencionados.
+### ✅ Cadastro de Filmes
+- Título original e em português
+- Ano, país, direção, elenco
+- Gênero, duração, sinopse
+- Marcação de lançamento (valor +50%)
+- **Cria automaticamente 2 DVDs e 2 Blu-Rays** para cada filme
 
-O prazo para devolução é de um dia para lançamentos e três dias para filmes do catálogo. Contudo, o valor a ser efetivamente pago e a data de devolução prevista de um item locado podem ser alterados pelo atendente da locadora para aplicar descontos individualizados ou ampliar prazos de devolução.
-Sobre um filme, deseja-se saber: título original, título em português, países, ano, direção, elenco, sinopse, duração e gênero. Os filmes são fornecidos por distribuidoras. De uma distribuidora deseja-se saber a razão social, CNPJ, endereço, telefone e pessoa de contato.
+### ✅ Cadastro de Clientes
+- **Titular:** Requer idade +18, CPF, endereço completo
+- **Dependente:** Apenas dados básicos
+- Validação automática de maioridade
 
-De um item, deseja-se saber a data de aquisição, número de série (código de barras) e tipo de mídia. Clientes locam itens. Um cliente pode ser um cliente titular ou um de seus dependentes. Quando uma pessoa faz sua inscrição na locadora como titular, lhe é dado o direito de indicar até três dependentes, pelos quais será responsável. Para a locadora, é fundamental identificar exatamente quem locou uma fita, se o titular ou um de seus dependentes. Contudo, para efeito de controle, a locadora deseja ter mais informações sobre o titular do que sobre seus dependentes. Sobre um titular, deseja-se saber nome, email, endereço, telefone residencial, local onde trabalha, telefone comercial, telefone celular, sexo, CPF e data de nascimento. Apenas maiores de idade podem ser titulares. De um dependente, são necessários apenas o nome, email, sexo e data de nascimento.
+### ✅ Locação
+- Seleção de cliente e filme
+- Exibição de itens disponíveis com valores
+- Cálculo automático de prazo (1 dia lançamento, 3 dias catálogo)
+- **Valores:** DVD/VHS/HD-DVD = R$ 5,00 | Blu-Ray = R$ 7,50
+- **Lançamentos:** +50% no valor
 
-Tanto titulares quanto dependentes têm um número de inscrição, o qual é único por cliente. Clientes podem também reservar filmes. É importante registrar a data e a hora em que a reserva foi feita e o tipo de mídia que o cliente deseja. Assim, é possível atender as reservas por ordem de chegada, por tipo de mídia. Uma locação só pode ser feita para um item, se não houver uma reserva não atendida para o seu filme e mídia. Quando um item de um filme e tipo de mídia reservado é devolvido, comunica-se o cliente interessado por email e, a partir desse momento, o cliente tem 24 horas para retirá-lo; caso contrário, expira-se a reserva e o item é liberado. Não são aceitas reservas para filmes que têm itens do tipo de mídia requerido disponíveis na locadora, nem reservas para datas específicas. Quando a devolução de um item é feita com atraso, cobra-se multa. A multa é calculada como sendo o valor da locação aplicado ao número de dias de atraso. Caso a locação do item não tenha sido paga no ato da locação, terá de ser paga obrigatoriamente na devolução. Não são aceitos pagamentos mensais ou em outros momentos que não a locação ou a devolução. Não é necessário representar o sistema de pagamento, por hora ele será controlado manualmente pelos funcionários, o sistema apenas deverá usar os critérios apresentados (ex: atraso) para calcular e exibir o valor. O módulo de pagamentos será desenvolvido em outro momento.
+### ✅ Devolução
+- Lista de locações pendentes
+- Cálculo automático de multa por atraso
+- Multa = dias de atraso × valor da locação
+- Histórico de devoluções recentes
 
-Consultas ao acervo da locadora devem poder ser feitas pela Internet. Um cliente pode consultar os dados de um filme específico, informando o título (ou parte dele), original ou em português. Também devem ser possíveis consultas por gênero, tipo de mídia disponível, ator, diretor, nacionalidade e lançamentos, bem como combinações dessas informações.
+### ✅ Reserva
+- Só permite reservar se **NÃO houver itens disponíveis**
+- Notificação por email quando disponível
+- Controle de reservas por ordem de chegada
+
+### ✅ Consulta ao Acervo
+- Busca por título (original ou português)
+- Filtro por gênero
+- Filtro por tipo de mídia disponível
+- Busca por ator, diretor ou país
+- Filtro para lançamentos
+
+## 🎨 Design
+
+- Interface moderna com gradiente roxo
+- Layout responsivo (funciona em mobile)
+- Navegação simples entre páginas
+- Alertas visuais de sucesso/erro
+- Cards organizados para listagens
+
+## 🔧 Tecnologias Utilizadas
+
+- **HTML5** - Estrutura das páginas
+- **CSS3** - Estilização e layout responsivo
+- **JavaScript ES6+** - Lógica e orientação a objetos
+- **LocalStorage** - Persistência de dados
+- **Módulos ES6** - Importação das classes
+
+## 📖 Regras de Negócio Implementadas
+
+1. ✅ Apenas maiores de 18 anos podem ser titulares
+2. ✅ Titular pode ter até 3 dependentes
+3. ✅ Lançamentos têm valor 50% maior
+4. ✅ Prazo: 1 dia (lançamento) ou 3 dias (catálogo)
+5. ✅ Multa por atraso = dias × valor locação
+6. ✅ Não pode reservar se há itens disponíveis
+7. ✅ Reservas por ordem de chegada
+8. ✅ 24 horas para retirar item reservado
+
+## 🎓 Sobre o Trabalho
+
+Este projeto foi desenvolvido como trabalho acadêmico do **primeiro ano** da faculdade de Análise de Sistemas. 
+
+O objetivo é aplicar conceitos de:
+- Programação Orientada a Objetos
+- Herança e polimorfismo
+- Modelagem de sistemas
+- Desenvolvimento web básico
+- Análise de requisitos
+
+## 👥 Grupo
+
+Trabalho desenvolvido por [ADICIONE OS NOMES AQUI]
+
+---
+
+**Dúvidas?** Consulte o documento de requisitos original ou entre em contato com o professor responsável.
+
+🎬 **Bom uso do sistema!**
