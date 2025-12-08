@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Remoções - Locadora</title>
+    <link rel="stylesheet" href="/stylesheet/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 Vídeo Locadora Passatempo</h1>
+            <p>Sistema de Gerenciamento</p>
+        </header>
+
+        <nav>
+            <a href="../index.html">Início</a>
+            <a href="cadastro-filme.html">Cadastrar Filme</a>
+            <a href="adicionar-itens.html">Adicionar Itens</a>
+            <a href="remover-itens.html">Remover Itens</a>
+            <a href="historico-remocoes.html" class="active">Histórico</a>
+            <a href="cadastro-cliente.html">Cadastrar Cliente</a>
+            <a href="consulta-clientes.html">Consultar Clientes</a>
+            <a href="locacao.html">Fazer Locação</a>
+            <a href="devolucao.html">Devolver Item</a>
+            <a href="reserva.html">Fazer Reserva</a>
+            <a href="consulta.html">Consultar Acervo</a>
+        </nav>
+
+        <main>
+            <h2>📋 Histórico de Remoções de Itens</h2>
+
+            <div class="info">
+                <p>Registro de todos os itens removidos do sistema com motivo e data.</p>
+            </div>
+
+            <div class="two-columns" style="margin-bottom: 20px;">
+                <div class="form-group">
+                    <label>Filtrar por Tipo de Mídia</label>
+                    <select id="filtroTipo" onchange="filtrarHistorico()">
+                        <option value="">Todos os tipos</option>
+                        <option value="DVD">DVD</option>
+                        <option value="Blu-Ray">Blu-Ray</option>
+                        <option value="VHS">VHS</option>
+                        <option value="HD-DVD">HD-DVD</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Buscar por Filme</label>
+                    <input type="text" id="buscarFilme" onkeyup="filtrarHistorico()" placeholder="Digite o título...">
+                </div>
+            </div>
+
+            <div id="estatisticas" style="margin-bottom: 20px;"></div>
+
+            <div class="lista-itens">
+                <h3>Itens Removidos</h3>
+                <div id="listaRemocoes"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Vídeo Locadora Passatempo</p>
+        </footer>
+    </div>
+
+    <script type="module" src="../main/historicoRemocoes.main.js"></script>
+</body>
+
+</html>

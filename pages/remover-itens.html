@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remover Itens - Locadora</title>
+    <link rel="stylesheet" href="/stylesheet/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 Vídeo Locadora Passatempo</h1>
+            <p>Sistema de Gerenciamento</p>
+        </header>
+
+        <nav>
+            <a href="../index.html">Início</a>
+            <a href="cadastro-filme.html">Cadastrar Filme</a>
+            <a href="adicionar-itens.html">Adicionar Itens</a>
+            <a href="remover-itens.html" class="active">Remover Itens</a>
+            <a href="historico-remocoes.html">Histórico</a>
+            <a href="cadastro-cliente.html">Cadastrar Cliente</a>
+            <a href="consulta-clientes.html">Consultar Clientes</a>
+            <a href="locacao.html">Fazer Locação</a>
+            <a href="devolucao.html">Devolver Item</a>
+            <a href="reserva.html">Fazer Reserva</a>
+            <a href="consulta.html">Consultar Acervo</a>
+        </nav>
+
+        <main>
+            <h2>🗑️ Remover Itens do Sistema</h2>
+
+            <div class="info" style="background: #fff3cd; border-left-color: #ffc107;">
+                <p><strong>⚠️ Atenção:</strong> Esta funcionalidade permite remover itens permanentemente do sistema (por dano, perda, descarte, etc.).</p>
+                <p>Apenas itens <strong>disponíveis</strong> podem ser removidos. Itens alugados ou reservados devem ser devolvidos primeiro.</p>
+            </div>
+
+            <div class="form-group">
+                <label>Selecione o Filme *</label>
+                <select id="filmeSelect" onchange="mostrarItensFilme()">
+                    <option value="">Selecione um filme...</option>
+                </select>
+            </div>
+
+            <div id="itensFilme"></div>
+
+            <div id="mensagem"></div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Vídeo Locadora Passatempo</p>
+        </footer>
+    </div>
+
+    <script type="module" src="../main/removerItens.main.js"></script>
+</body>
+
+</html>

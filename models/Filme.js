@@ -13,7 +13,7 @@ export class Filme {
         this.ehLancamento = ehLancamento;
         this.distribuidora = distribuidora;
 
-        this.itens = []; // relação 1..*
+        this.itens = [];
     }
 
     getValorBase(tipoMidia) {
@@ -42,6 +42,5 @@ export class Filme {
 
     adicionarItem(item) {
         this.itens.push(item);
-        item.filme = this; // Estabelece relação bidirecional
     }
 }

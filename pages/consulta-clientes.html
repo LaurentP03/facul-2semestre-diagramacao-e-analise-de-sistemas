@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar Clientes - Locadora</title>
+    <link rel="stylesheet" href="/stylesheet/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 Vídeo Locadora Passatempo</h1>
+            <p>Sistema de Gerenciamento</p>
+        </header>
+
+        <nav>
+            <a href="../index.html">Início</a>
+            <a href="cadastro-filme.html">Cadastrar Filme</a>
+            <a href="adicionar-itens.html">Adicionar Itens</a>
+            <a href="remover-itens.html">Remover Itens</a>
+            <a href="cadastro-cliente.html">Cadastrar Cliente</a>
+            <a href="consulta-clientes.html" class="active">Consultar Clientes</a>
+            <a href="locacao.html">Fazer Locação</a>
+            <a href="devolucao.html">Devolver Item</a>
+            <a href="reserva.html">Fazer Reserva</a>
+            <a href="consulta.html">Consultar Acervo</a>
+        </nav>
+
+        <main>
+            <h2>👥 Consulta de Clientes</h2>
+
+            <div class="info">
+                <p>Busque e visualize informações detalhadas dos clientes cadastrados no sistema.</p>
+            </div>
+
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="margin-top: 0; color: #667eea;">🔍 Filtros de Busca</h3>
+                
+                <div class="form-group">
+                    <label>Buscar por Nome ou Email</label>
+                    <input type="text" id="buscarTexto" onkeyup="filtrarClientes()" placeholder="Digite o nome ou email do cliente...">
+                </div>
+
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label>Tipo de Cliente</label>
+                        <select id="filtroTipo" onchange="filtrarClientes()">
+                            <option value="">Todos</option>
+                            <option value="titular">Apenas Titulares</option>
+                            <option value="dependente">Apenas Dependentes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sexo</label>
+                        <select id="filtroSexo" onchange="filtrarClientes()">
+                            <option value="">Todos</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Feminino</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label style="display: flex; align-items: center;">
+                        <input type="checkbox" id="filtroMaiorIdade" onchange="filtrarClientes()" style="width: auto; margin-right: 10px;">
+                        Apenas Maiores de 18 anos
+                    </label>
+                </div>
+
+                <button onclick="limparFiltros()" style="background: #6c757d;">🗑️ Limpar Filtros</button>
+            </div>
+
+            <div id="estatisticas"></div>
+
+            <div class="lista-itens">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3>Clientes Encontrados (<span id="totalClientes">0</span>)</h3>
+                    <select id="ordenacao" onchange="filtrarClientes()" style="width: 200px;">
+                        <option value="nome">Ordenar por Nome</option>
+                        <option value="email">Ordenar por Email</option>
+                        <option value="dataNascimento">Ordenar por Idade</option>
+                        <option value="recente">Mais Recentes</option>
+                    </select>
+                </div>
+                <div id="listaClientes"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Vídeo Locadora Passatempo</p>
+        </footer>
+    </div>
+
+    <script type="module" src="../main/consultaClientes.main.js"></script>
+</body>
+
+</html>

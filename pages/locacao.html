@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fazer Locação - Locadora</title>
+    <link rel="stylesheet" href="/stylesheet/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 Vídeo Locadora Passatempo</h1>
+            <p>Sistema de Gerenciamento</p>
+        </header>
+
+        <nav>
+            <a href="../index.html">Início</a>
+            <a href="cadastro-filme.html">Cadastrar Filme</a>
+            <a href="adicionar-itens.html">Adicionar Itens</a>
+            <a href="remover-itens.html">Remover Itens</a>
+            <a href="historico-remocoes.html">Histórico</a>
+            <a href="cadastro-cliente.html">Cadastrar Cliente</a>
+            <a href="consulta-clientes.html">Consultar Clientes</a>
+            <a href="locacao.html" class="active">Fazer Locação</a>
+            <a href="devolucao.html">Devolver Item</a>
+            <a href="reserva.html">Fazer Reserva</a>
+            <a href="consulta.html">Consultar Acervo</a>
+        </nav>
+
+        <main>
+            <h2>Nova Locação</h2>
+
+            <form id="formLocacao">
+                <div class="form-group">
+                    <label>Cliente *</label>
+                    <select id="clienteSelect" required>
+                        <option value="">Selecione um cliente...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Filme *</label>
+                    <select id="filmeSelect" onchange="carregarItens()" required>
+                        <option value="">Selecione um filme...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Item Disponível *</label>
+                    <select id="itemSelect" required>
+                        <option value="">Selecione um filme primeiro</option>
+                    </select>
+                </div>
+
+                <div id="infoLocacao"></div>
+
+                <button type="submit">Realizar Locação</button>
+            </form>
+
+            <div id="mensagem"></div>
+
+            <div class="lista-itens">
+                <h3>Locações Ativas</h3>
+                <div id="locacoesAtivas"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Vídeo Locadora Passatempo</p>
+        </footer>
+    </div>
+
+    <script type="module" src="../main/locacao.main.js"></script>
+</body>
+
+</html>

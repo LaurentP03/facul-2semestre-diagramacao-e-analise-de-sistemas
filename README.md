@@ -1,131 +1,150 @@
-# 🎬 Vídeo Locadora Passatempo - Sistema de Gerenciamento
+# Estrutura MVC - Vídeo Locadora Passatempo
 
-Trabalho de Diagramação e Análise de Sistemas - Projeto desenvolvido para gerenciar as operações de uma vídeo locadora.
-
-## 📁 Estrutura do Projeto
+## 📁 Organização dos Arquivos
 
 ```
-projeto-locadora/
-├── index.html                  # Página inicial
-├── cadastro-filme.html         # Cadastro de filmes
-├── cadastro-cliente.html       # Cadastro de clientes
-├── locacao.html               # Realizar locações
-├── devolucao.html             # Devolver itens
-├── reserva.html               # Fazer reservas
-├── consulta.html              # Consultar acervo
-├── style.css                  # Estilos (único para todas páginas)
+projeto/
 │
-├── Cliente.js                 # Classe Cliente
-├── Titular.js                 # Classe Titular (herda de Cliente)
-├── Dependente.js              # Classe Dependente (herda de Cliente)
-├── Filme.js                   # Classe Filme
-├── Item.js                    # Classe Item
-├── Distribuidora.js           # Classe Distribuidora
-├── Locacao.js                 # Classe Locação
-├── Reserva.js                 # Classe Reserva
-└── SistemaLocacao.js          # Classe Sistema (opcional)
+├── models/                  # Modelos (já existentes)
+│   ├── Cliente.js
+│   ├── Titular.js
+│   ├── Dependente.js
+│   ├── Filme.js
+│   ├── Item.js
+│   ├── Distribuidora.js
+│   ├── Locacao.js
+│   └── Reserva.js
+│
+├── stylesheet/
+│   └── style.css          # Estilização do site
+│
+├── services/               # Serviços
+│   └── storage.js         # Gerenciamento do localStorage
+│
+├── controllers/           # Controllers (lógica de negócio)
+│   ├── clienteController.js
+│   ├── filmeController.js
+│   ├── locacaoController.js
+│   └── reservaController.js
+│
+├── views/                 # Views (renderização)
+│   ├── clienteView.js
+│   ├── filmeView.js
+│   ├── locacaoView.js
+│   ├── devolucaoView.js
+│   └── reservaView.js
+│
+├── main/                  # Inicializadores das páginas
+│   ├── cadastroCliente.main.js
+│   ├── cadastroFilme.main.js
+│   ├── locacao.main.js
+│   ├── devolucao.main.js
+│   ├── reserva.main.js
+│   ├── consulta.main.js
+│   ├── adicionarItens.main.js
+│   ├── removerItens.main.js
+│   ├── historicoRemocoes.main.js
+│   └── removerItens.main.js
+│
+└── pages/                 # Arquivos HTML
+    ├── index.html
+    ├── cadastro-cliente.html
+    ├── cadastro-filme.html
+    ├── locacao.html
+    ├── devolucao.html
+    ├── reserva.html
+    ├── consulta.html
+    ├── adicionar-itens.html
+    ├── remover-itens.html
+    ├── historico-remocoes.html
+    └── consulta-clientes.html
 ```
 
-## 🚀 Como Executar
+## 🎯 Padrão MVC Implementado
 
-1. Instale a extensão **Live Server** no VS Code
-2. Clique com botão direito no arquivo `index.html`
-3. Selecione **"Open with Live Server"**
-4. O sistema abrirá automaticamente no navegador
+### **Model (Modelos)**
+Representam as entidades do sistema e suas regras de negócio básicas.
 
-## 💾 Armazenamento de Dados
+**Arquivos:** `Cliente.js`, `Filme.js`, `Locacao.js`, `Reserva.js`, etc.
 
-O sistema usa **localStorage** do navegador para salvar todos os dados:
-- Filmes cadastrados
-- Clientes (titulares e dependentes)  
-- Locações ativas e históricas
-- Reservas abertas
+**Responsabilidades:**
+- Definir a estrutura dos dados
+- Validações básicas
+- Regras de negócio da entidade
 
-**Os dados ficam salvos no navegador**, então não se perdem ao fechar a página!
+### **View (Visões)**
+Responsáveis pela apresentação dos dados na interface.
 
-## 📋 Funcionalidades Implementadas
+**Arquivos:** `clienteView.js`, `filmeView.js`, `locacaoView.js`, etc.
 
-### ✅ Cadastro de Filmes
-- Título original e em português
-- Ano, país, direção, elenco
-- Gênero, duração, sinopse
-- Marcação de lançamento (valor +50%)
-- **Cria automaticamente 2 DVDs e 2 Blu-Rays** para cada filme
+**Responsabilidades:**
+- Renderizar listas e formulários
+- Exibir mensagens ao usuário
+- Atualizar a interface
+- Não contêm lógica de negócio
 
-### ✅ Cadastro de Clientes
-- **Titular:** Requer idade +18, CPF, endereço completo
-- **Dependente:** Apenas dados básicos
-- Validação automática de maioridade
+### **Controller (Controladores)**
+Gerenciam a lógica de negócio e fazem a ponte entre Model e View.
 
-### ✅ Locação
-- Seleção de cliente e filme
-- Exibição de itens disponíveis com valores
-- Cálculo automático de prazo (1 dia lançamento, 3 dias catálogo)
-- **Valores:** DVD/VHS/HD-DVD = R$ 5,00 | Blu-Ray = R$ 7,50
-- **Lançamentos:** +50% no valor
+**Arquivos:** `clienteController.js`, `filmeController.js`, `locacaoController.js`, etc.
 
-### ✅ Devolução
-- Lista de locações pendentes
-- Cálculo automático de multa por atraso
-- Multa = dias de atraso × valor da locação
-- Histórico de devoluções recentes
+**Responsabilidades:**
+- Processar requisições do usuário
+- Executar lógica de negócio complexa
+- Chamar Models para manipular dados
+- Chamar Views para atualizar interface
+- Gerenciar fluxo da aplicação
 
-### ✅ Reserva
-- Só permite reservar se **NÃO houver itens disponíveis**
-- Notificação por email quando disponível
-- Controle de reservas por ordem de chegada
+### **Service (Serviços)**
+Camada auxiliar para funcionalidades transversais.
 
-### ✅ Consulta ao Acervo
-- Busca por título (original ou português)
-- Filtro por gênero
-- Filtro por tipo de mídia disponível
-- Busca por ator, diretor ou país
-- Filtro para lançamentos
+**Arquivo:** `storage.js`
 
-## 🎨 Design
+**Responsabilidades:**
+- Abstração do localStorage
+- Operações de persistência
+- Gerenciamento de IDs
 
-- Interface moderna com gradiente roxo
-- Layout responsivo (funciona em mobile)
-- Navegação simples entre páginas
-- Alertas visuais de sucesso/erro
-- Cards organizados para listagens
+### **Main (Inicializadores)**
+Arquivos de entrada que conectam tudo.
 
-## 🔧 Tecnologias Utilizadas
+**Arquivos:** `cadastroCliente.main.js`, `locacao.main.js`, etc.
 
-- **HTML5** - Estrutura das páginas
-- **CSS3** - Estilização e layout responsivo
-- **JavaScript ES6+** - Lógica e orientação a objetos
-- **LocalStorage** - Persistência de dados
-- **Módulos ES6** - Importação das classes
+**Responsabilidades:**
+- Instanciar Controllers e Views
+- Configurar event listeners
+- Inicializar a página
+- Conectar interface com lógica
 
-## 📖 Regras de Negócio Implementadas
+## 🔄 Fluxo de Dados
 
-1. ✅ Apenas maiores de 18 anos podem ser titulares
-2. ✅ Titular pode ter até 3 dependentes
-3. ✅ Lançamentos têm valor 50% maior
-4. ✅ Prazo: 1 dia (lançamento) ou 3 dias (catálogo)
-5. ✅ Multa por atraso = dias × valor locação
-6. ✅ Não pode reservar se há itens disponíveis
-7. ✅ Reservas por ordem de chegada
-8. ✅ 24 horas para retirar item reservado
-
-## 🎓 Sobre o Trabalho
-
-Este projeto foi desenvolvido como trabalho acadêmico do **primeiro ano** da faculdade de Análise de Sistemas. 
-
-O objetivo é aplicar conceitos de:
-- Programação Orientada a Objetos
-- Herança e polimorfismo
-- Modelagem de sistemas
-- Desenvolvimento web básico
-- Análise de requisitos
-
-## 👥 Grupo
-
-Trabalho desenvolvido por [ADICIONE OS NOMES AQUI]
-
----
-
-**Dúvidas?** Consulte o documento de requisitos original ou entre em contato com o professor responsável.
-
-🎬 **Bom uso do sistema!**
+```
+┌─────────────────────────────────────────────────────┐
+│                    USUÁRIO                          │
+│         (Interage com a interface HTML)             │
+└──────────────────┬──────────────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────────┐
+│                    MAIN.JS                          │
+│         (Event listeners e inicialização)           │
+└──────────────────┬──────────────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────────┐
+│                  CONTROLLER                         │
+│         (Lógica de negócio e orquestração)         │
+└──────┬────────────────────────────────────┬─────────┘
+       │                                    │
+       ▼                                    ▼
+┌─────────────┐                    ┌──────────────┐
+│    MODEL    │◄──────────────────►│     VIEW     │
+│   (Dados)   │                    │ (Interface)  │
+└──────┬──────┘                    └──────────────┘
+       │
+       ▼
+┌─────────────┐
+│   SERVICE   │
+│  (Storage)  │
+└─────────────┘
+```

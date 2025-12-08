@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar Acervo - Locadora</title>
+    <link rel="stylesheet" href="/stylesheet/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 Vídeo Locadora Passatempo</h1>
+            <p>Sistema de Gerenciamento</p>
+        </header>
+
+        <nav>
+            <a href="../index.html">Início</a>
+            <a href="cadastro-filme.html">Cadastrar Filme</a>
+            <a href="adicionar-itens.html">Adicionar Itens</a>
+            <a href="remover-itens.html">Remover Itens</a>
+            <a href="historico-remocoes.html">Histórico</a>
+            <a href="cadastro-cliente.html">Cadastrar Cliente</a>
+            <a href="consulta-clientes.html">Consultar Clientes</a>
+            <a href="locacao.html">Fazer Locação</a>
+            <a href="devolucao.html">Devolver Item</a>
+            <a href="reserva.html">Fazer Reserva</a>
+            <a href="consulta.html" class="active">Consultar Acervo</a>
+        </nav>
+
+        <main>
+            <h2>Consulta ao Acervo</h2>
+
+            <div class="form-group">
+                <label>🔍 Buscar por Título</label>
+                <input type="text" id="buscaTitulo" placeholder="Digite parte do título original ou em português...">
+            </div>
+
+            <div class="two-columns">
+                <div class="form-group">
+                    <label>Filtrar por Gênero</label>
+                    <select id="filtroGenero">
+                        <option value="">Todos os gêneros</option>
+                        <option value="acao">Ação</option>
+                        <option value="animacao">Animação</option>
+                        <option value="aventura">Aventura</option>
+                        <option value="comedia">Comédia</option>
+                        <option value="documentario">Documentário</option>
+                        <option value="drama">Drama</option>
+                        <option value="ficcao">Ficção</option>
+                        <option value="guerra">Guerra</option>
+                        <option value="musical">Musical</option>
+                        <option value="policial">Policial</option>
+                        <option value="romance">Romance</option>
+                        <option value="suspense">Suspense</option>
+                        <option value="terror">Terror</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Filtrar por Tipo de Mídia</label>
+                    <select id="filtroMidia">
+                        <option value="">Todas as mídias</option>
+                        <option value="DVD">DVD</option>
+                        <option value="Blu-Ray">Blu-Ray</option>
+                        <option value="VHS">VHS</option>
+                        <option value="HD-DVD">HD-DVD</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="two-columns">
+                <div class="form-group">
+                    <label>Buscar por Ator</label>
+                    <input type="text" id="buscaAtor" placeholder="Nome do ator...">
+                </div>
+
+                <div class="form-group">
+                    <label>Buscar por Diretor</label>
+                    <input type="text" id="buscaDiretor" placeholder="Nome do diretor...">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Buscar por País</label>
+                <input type="text" id="buscaPais" placeholder="País de origem...">
+            </div>
+
+            <div class="form-group">
+                <label style="display: flex; align-items: center;">
+                    <input type="checkbox" id="filtroLancamento" style="width: auto; margin-right: 10px;">
+                    Apenas Lançamentos
+                </label>
+            </div>
+
+            <button onclick="buscarFilmes()">🔍 Buscar</button>
+            <button onclick="limparFiltros()" class="btn-secondary"
+                style="background: #6c757d; margin-left: 10px;">Limpar Filtros</button>
+
+            <div class="lista-itens">
+                <h3>Resultados da Busca</h3>
+                <div id="resultados"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Vídeo Locadora Passatempo</p>
+        </footer>
+    </div>
+
+    <script type="module" src="../main/consulta.main.js"></script>
+</body>
+
+</html>

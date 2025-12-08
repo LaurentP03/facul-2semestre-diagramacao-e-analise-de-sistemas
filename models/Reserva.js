@@ -5,15 +5,16 @@ export class Reserva {
         this.filme = filme;
         this.tipoMidia = tipoMidia;
 
-        this.dataHoraReserva = new Date();
+        this.dataHoraReserva = new Date().toISOString();
         this.dataHoraLimiteRetirada = null;
-        this.status = "aberta"; // aberta, expirada, atendida
-        this.itemReservado = null; // Item que foi reservado para este cliente
+        this.status = "aberta";
+        this.itemReservado = null;
     }
 
     ativarRetirada(item) {
         this.itemReservado = item;
-        this.dataHoraLimiteRetirada = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        const data = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        this.dataHoraLimiteRetirada = data.toISOString();
         item.marcarComoReservado();
     }
 
@@ -34,7 +35,7 @@ export class Reserva {
 
     estaDentroDoPrazo() {
         if (!this.dataHoraLimiteRetirada) return false;
-        return new Date() <= this.dataHoraLimiteRetirada;
+        return new Date() <= new Date(this.dataHoraLimiteRetirada);
     }
 
     verificarExpiracao() {

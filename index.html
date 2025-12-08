@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vídeo Locadora Passatempo</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./stylesheet/style.css">
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -15,52 +17,73 @@
 
         <nav>
             <a href="index.html" class="active">Início</a>
-            <a href="cadastro-filme.html">Cadastrar Filme</a>
-            <a href="cadastro-cliente.html">Cadastrar Cliente</a>
-            <a href="locacao.html">Fazer Locação</a>
-            <a href="devolucao.html">Devolver Item</a>
-            <a href="reserva.html">Fazer Reserva</a>
-            <a href="consulta.html">Consultar Acervo</a>
+            <a href="./pages/cadastro-filme.html">Cadastrar Filme</a>
+            <a href="./pages/adicionar-itens.html">Adicionar Itens</a>
+            <a href="./pages/remover-itens.html">Remover Itens</a>
+            <a href="./pages/cadastro-cliente.html">Cadastrar Cliente</a>
+            <a href="./pages/consulta-clientes.html">Consultar Clientes</a>
+            <a href="./pages/locacao.html">Fazer Locação</a>
+            <a href="./pages/devolucao.html">Devolver Item</a>
+            <a href="./pages/reserva.html">Fazer Reserva</a>
+            <a href="./pages/consulta.html">Consultar Acervo</a>
         </nav>
 
         <main>
             <h2>Bem-vindo ao Sistema da Locadora!</h2>
-            
+
             <div class="cards">
                 <div class="card">
-                    <h3>📽️ Filmes</h3>
+                    <h3>🎞️ Filmes</h3>
                     <p>Cadastre e gerencie o acervo de filmes</p>
-                    <a href="cadastro-filme.html" class="btn">Acessar</a>
+                    <a href="./pages/cadastro-filme.html" class="btn">Acessar</a>
+                </div>
+
+                <div class="card">
+                    <h3>➕ Adicionar Itens</h3>
+                    <p>Adicione itens a filmes já cadastrados</p>
+                    <a href="./pages/adicionar-itens.html" class="btn">Acessar</a>
+                </div>
+
+                <div class="card">
+                    <h3>🗑️ Remover Itens</h3>
+                    <p>Remova itens danificados ou descartados</p>
+                    <a href="./pages/remover-itens.html" class="btn">Acessar</a>
                 </div>
 
                 <div class="card">
                     <h3>👥 Clientes</h3>
                     <p>Cadastre titulares e dependentes</p>
-                    <a href="cadastro-cliente.html" class="btn">Acessar</a>
+                    <a href="./pages/cadastro-cliente.html" class="btn">Acessar</a>
+                </div>
+
+                <div class="card">
+                    <h3>🔍 Consultar Clientes</h3>
+                    <p>Busque e visualize dados dos clientes</p>
+                    <a href="./pages/consulta-clientes.html" class="btn">Acessar</a>
                 </div>
 
                 <div class="card">
                     <h3>🎥 Locação</h3>
                     <p>Realize locações de filmes</p>
-                    <a href="locacao.html" class="btn">Acessar</a>
+                    <a href="./pages/locacao.html" class="btn">Acessar</a>
                 </div>
 
                 <div class="card">
                     <h3>↩️ Devolução</h3>
                     <p>Registre devoluções de itens</p>
-                    <a href="devolucao.html" class="btn">Acessar</a>
+                    <a href="./pages/devolucao.html" class="btn">Acessar</a>
                 </div>
 
                 <div class="card">
                     <h3>📅 Reserva</h3>
                     <p>Faça reservas de filmes</p>
-                    <a href="reserva.html" class="btn">Acessar</a>
+                    <a href="./pages/reserva.html" class="btn">Acessar</a>
                 </div>
 
                 <div class="card">
-                    <h3>🔍 Consulta</h3>
+                    <h3>🔍 Acervo</h3>
                     <p>Busque filmes no acervo</p>
-                    <a href="consulta.html" class="btn">Acessar</a>
+                    <a href="./pages/consulta.html" class="btn">Acessar</a>
                 </div>
             </div>
 
@@ -69,11 +92,13 @@
                 <p>Este sistema permite gerenciar todas as operações da Vídeo Locadora Passatempo, incluindo:</p>
                 <ul>
                     <li>Cadastro de filmes e itens (DVD, Blu-Ray, VHS, HD-DVD)</li>
+                    <li>Adição e remoção de itens do acervo</li>
                     <li>Cadastro de clientes titulares e dependentes</li>
                     <li>Realização de locações com cálculo automático de valores</li>
                     <li>Controle de devoluções e multas por atraso</li>
                     <li>Sistema de reservas quando não há itens disponíveis</li>
                     <li>Consulta ao acervo por diversos critérios</li>
+                    <li>Gestão de itens danificados ou descartados</li>
                 </ul>
             </div>
         </main>
@@ -83,4 +108,5 @@
         </footer>
     </div>
 </body>
+
 </html>

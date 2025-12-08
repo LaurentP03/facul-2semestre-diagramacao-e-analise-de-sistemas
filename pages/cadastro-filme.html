@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar Filme - Locadora</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/stylesheet/style.css">
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -14,9 +16,13 @@
         </header>
 
         <nav>
-            <a href="index.html">Início</a>
+            <a href="../index.html">Início</a>
             <a href="cadastro-filme.html" class="active">Cadastrar Filme</a>
+            <a href="adicionar-itens.html">Adicionar Itens</a>
+            <a href="remover-itens.html">Remover Itens</a>
+            <a href="historico-remocoes.html">Histórico</a>
             <a href="cadastro-cliente.html">Cadastrar Cliente</a>
+            <a href="consulta-clientes.html">Consultar Clientes</a>
             <a href="locacao.html">Fazer Locação</a>
             <a href="devolucao.html">Devolver Item</a>
             <a href="reserva.html">Fazer Reserva</a>
@@ -25,7 +31,7 @@
 
         <main>
             <h2>Cadastro de Filme</h2>
-            
+
             <form id="formFilme">
                 <div class="two-columns">
                     <div class="form-group">
@@ -98,6 +104,48 @@
                     </div>
                 </div>
 
+                <div class="itens-section">
+                    <h3>📀 Itens Disponíveis</h3>
+                    <p style="color: #666; margin-bottom: 15px;">Selecione os tipos de mídia e a quantidade de cada
+                        item:</p>
+
+                    <div class="item-type">
+                        <label>
+                            <input type="checkbox" id="itemDVD" onchange="toggleQuantidade('DVD')">
+                            DVD
+                        </label>
+                        <span class="quantidade-label">Quantidade:</span>
+                        <input type="number" id="qtdDVD" min="1" max="10" value="2" disabled>
+                    </div>
+
+                    <div class="item-type">
+                        <label>
+                            <input type="checkbox" id="itemBluRay" onchange="toggleQuantidade('BluRay')">
+                            Blu-Ray
+                        </label>
+                        <span class="quantidade-label">Quantidade:</span>
+                        <input type="number" id="qtdBluRay" min="1" max="10" value="2" disabled>
+                    </div>
+
+                    <div class="item-type">
+                        <label>
+                            <input type="checkbox" id="itemVHS" onchange="toggleQuantidade('VHS')">
+                            VHS
+                        </label>
+                        <span class="quantidade-label">Quantidade:</span>
+                        <input type="number" id="qtdVHS" min="1" max="10" value="1" disabled>
+                    </div>
+
+                    <div class="item-type">
+                        <label>
+                            <input type="checkbox" id="itemHDDVD" onchange="toggleQuantidade('HDDVD')">
+                            HD-DVD
+                        </label>
+                        <span class="quantidade-label">Quantidade:</span>
+                        <input type="number" id="qtdHDDVD" min="1" max="10" value="1" disabled>
+                    </div>
+                </div>
+
                 <button type="submit">Cadastrar Filme</button>
             </form>
 
@@ -114,77 +162,7 @@
         </footer>
     </div>
 
-    <script type="module">
-        import { Filme } from './Filme.js';
-        import { Item } from './Item.js';
-        import { Distribuidora } from './Distribuidora.js';
-
-        // Recuperar dados do localStorage
-        let filmes = JSON.parse(localStorage.getItem('filmes') || '[]');
-        let contadorId = parseInt(localStorage.getItem('contadorId') || '1');
-
-        // Exibir filmes cadastrados
-        function exibirFilmes() {
-            const container = document.getElementById('listaFilmes');
-            if (filmes.length === 0) {
-                container.innerHTML = '<p style="color: #666;">Nenhum filme cadastrado ainda.</p>';
-                return;
-            }
-
-            container.innerHTML = filmes.map(f => `
-                <div class="item">
-                    <h4>${f.tituloPortugues} (${f.ano})</h4>
-                    <p><strong>Original:</strong> ${f.tituloOriginal}</p>
-                    <p><strong>Direção:</strong> ${f.direcao} | <strong>Gênero:</strong> ${f.genero}</p>
-                    <p><strong>Duração:</strong> ${f.duracao} min | <strong>País:</strong> ${f.pais}</p>
-                    ${f.ehLancamento ? '<span class="badge badge-warning">Lançamento</span>' : '<span class="badge badge-success">Catálogo</span>'}
-                </div>
-            `).join('');
-        }
-
-        // Cadastrar filme
-        document.getElementById('formFilme').addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const distribuidora = new Distribuidora(1, "Distribuidora Padrão", "00.000.000/0001-00", "Rua A, 123", "(11) 1111-1111", "João Silva");
-
-            const filme = new Filme(
-                contadorId++,
-                document.getElementById('tituloOriginal').value,
-                document.getElementById('tituloPortugues').value,
-                document.getElementById('ano').value,
-                document.getElementById('pais').value,
-                document.getElementById('direcao').value,
-                document.getElementById('elenco').value,
-                document.getElementById('sinopse').value,
-                document.getElementById('duracao').value,
-                document.getElementById('genero').value,
-                document.getElementById('ehLancamento').checked,
-                distribuidora
-            );
-
-            // Adicionar itens automaticamente (2 DVDs e 2 Blu-Rays)
-            const item1 = new Item(contadorId++, `DVD-${contadorId}`, 'DVD', new Date().toISOString());
-            const item2 = new Item(contadorId++, `DVD-${contadorId}`, 'DVD', new Date().toISOString());
-            const item3 = new Item(contadorId++, `BR-${contadorId}`, 'Blu-Ray', new Date().toISOString());
-            const item4 = new Item(contadorId++, `BR-${contadorId}`, 'Blu-Ray', new Date().toISOString());
-            
-            filme.itens = [item1, item2, item3, item4];
-
-            filmes.push(filme);
-            localStorage.setItem('filmes', JSON.stringify(filmes));
-            localStorage.setItem('contadorId', contadorId.toString());
-
-            document.getElementById('mensagem').innerHTML = '<div class="alert alert-success">✅ Filme cadastrado com sucesso!</div>';
-            e.target.reset();
-            exibirFilmes();
-
-            setTimeout(() => {
-                document.getElementById('mensagem').innerHTML = '';
-            }, 3000);
-        });
-
-        exibirFilmes();
-    </script>
+    <script type="module" src="../main/cadastroFilme.main.js"></script>
 </body>
+
 </html>

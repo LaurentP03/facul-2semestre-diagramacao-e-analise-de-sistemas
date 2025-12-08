@@ -1,23 +1,22 @@
 export class Locacao {
-    constructor(idLocacao, item, cliente, valorCobrado = null, dataPrevistaDevolucao = null) {
+    constructor(idLocacao, item, cliente, filme, valorCobrado = null, dataPrevistaDevolucao = null) {
         this.idLocacao = idLocacao;
         this.item = item;
         this.cliente = cliente;
-        this.filme = item.filme; // Referência ao filme do item
+        this.filme = filme;
         
-        // Calcula valor automaticamente se não fornecido (permite override pelo atendente)
         this.valorCobrada = valorCobrado !== null 
             ? valorCobrado 
-            : item.filme.getValorBase(item.tipoMidia);
+            : filme.getValorBase(item.tipoMidia);
         
-        this.dataLocacao = new Date();
+        this.dataLocacao = new Date().toISOString();
         
-        // Calcula data prevista automaticamente se não fornecida (permite override pelo atendente)
         if (dataPrevistaDevolucao !== null) {
             this.dataPrevistaDevolucao = dataPrevistaDevolucao;
         } else {
-            const prazo = item.filme.getPrazoDevolucao();
-            this.dataPrevistaDevolucao = new Date(Date.now() + prazo * 24 * 60 * 60 * 1000);
+            const prazo = filme.getPrazoDevolucao();
+            const data = new Date(Date.now() + prazo * 24 * 60 * 60 * 1000);
+            this.dataPrevistaDevolucao = data.toISOString();
         }
 
         this.dataDevolucao = null;
@@ -26,7 +25,7 @@ export class Locacao {
     }
 
     registrarDevolucao() {
-        this.dataDevolucao = new Date();
+        this.dataDevolucao = new Date().toISOString();
     }
 
     aplicarMulta(valor) {
@@ -37,7 +36,7 @@ export class Locacao {
         if (!this.dataDevolucao) return this.valorCobrada;
 
         const atraso = Math.ceil(
-            (this.dataDevolucao - this.dataPrevistaDevolucao) / (1000 * 3600 * 24)
+            (new Date(this.dataDevolucao) - new Date(this.dataPrevistaDevolucao)) / (1000 * 3600 * 24)
         );
 
         if (atraso > 0) {
@@ -49,6 +48,6 @@ export class Locacao {
 
     temAtraso() {
         if (!this.dataDevolucao) return false;
-        return this.dataDevolucao > this.dataPrevistaDevolucao;
+        return new Date(this.dataDevolucao) > new Date(this.dataPrevistaDevolucao);
     }
 }
